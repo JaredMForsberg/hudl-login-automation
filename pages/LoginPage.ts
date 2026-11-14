@@ -18,7 +18,9 @@ export class LoginPage {
       name: 'Continue',
       exact: true
     });
-    this.passwordToggle = page.locator('button:has(svg)').last();
+    this.passwordToggle = page.getByRole('button', {
+  name: /^(Show|Hide) password$/
+});
   }
 
   async navigate() {
@@ -40,7 +42,7 @@ export class LoginPage {
 }
 
 async editEmail() {
-  await this.page.getByText('Edit', { exact: true }).click();
+  await this.page.getByRole('link', {name: 'Edit email address'}).click();
 }
 
 async forgotPassword() {
