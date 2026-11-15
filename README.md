@@ -175,4 +175,4 @@ The workflow is not intended to run authenticated tests without a properly confi
 
 Jared Forsberg
 
-*Developed as a QA Engineer take-home assessment.*
+_Developed as a QA Engineer take-home assessment._

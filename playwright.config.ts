@@ -1,77 +1,55 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from "@playwright/test";
 
 /**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
-
-/**
- * See https://playwright.dev/docs/test-configuration.
+ * Playwright configuration for Hudl authentication testing.
+ *
+ * Defines cross-browser execution, test reporting, and debugging
+ * settings for both local development and CI environments.
  */
 export default defineConfig({
-  testDir: './tests',
-  /* Run tests in files in parallel */
-  fullyParallel: true,
-  /* Fail the build on CI if you accidentally left test.only in the source code. */
-  forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
-  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
-  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
-  use: {
-    baseURL: 'https://www.hudl.com',
-    trace: 'on-first-retry',
-    screenshot: 'only-on-failure',
-},
+  testDir: "./tests",
 
-  /* Configure projects for major browsers */
+  // Allow independent tests to execute concurrently.
+  fullyParallel: true,
+
+  // Prevent accidentally committed test.only() calls from
+  // silently excluding other tests during CI execution.
+  forbidOnly: !!process.env.CI,
+
+  // Retry failures in CI to help identify intermittent issues.
+  // Keep local runs at zero retries for immediate feedback.
+  retries: process.env.CI ? 2 : 0,
+
+  // Limit CI concurrency by default to reduce resource usage.
+  // The GitHub Actions workflow currently overrides this to 2.
+  workers: process.env.CI ? 1 : undefined,
+
+  // Generate an HTML report for reviewing test results.
+  reporter: "html",
+
+  use: {
+    // Base URL allows page objects to navigate using relative paths.
+    baseURL: "https://www.hudl.com",
+
+    // Collect traces on the first retry and screenshots on failure
+    // to help diagnose unsuccessful test executions.
+    trace: "on-first-retry",
+    screenshot: "only-on-failure",
+  },
+
+  // Execute each test against three major browser engines.
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      name: "chromium",
+      use: { ...devices["Desktop Chrome"] },
     },
-
     {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
+      name: "firefox",
+      use: { ...devices["Desktop Firefox"] },
     },
-
     {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
+      name: "webkit",
+      use: { ...devices["Desktop Safari"] },
     },
-
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
-
-    /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    // },
-    // {
-    //   name: 'Google Chrome',
-    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-    // },
   ],
-
-  /* Run your local dev server before starting the tests */
-  // webServer: {
-  //   command: 'npm run start',
-  //   url: 'http://localhost:3000',
-  //   reuseExistingServer: !process.env.CI,
-  // },
 });
